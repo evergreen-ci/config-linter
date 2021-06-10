@@ -1,7 +1,7 @@
 """entry point for evglint."""
 import os
 import sys
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 import click
 
@@ -65,6 +65,10 @@ def lint(ctx: click.Context) -> None:
             print(f"0 errors found in '{yaml_file}'")
         if err_count:
             print(f"{err_count} errors found in '{yaml_file}':")
+            print(
+                "For help resolving errors, see the helpful documentation at "
+                f"{ctx.obj['config']['help_url']}"
+            )
             print_nl = False
             for rule, error_list in errors.items():
                 for error in error_list:

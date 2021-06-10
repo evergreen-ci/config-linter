@@ -2,10 +2,7 @@
 
 A linter for evergreen yamls.
 
-Add to your requirements.txt as:
-```
-git+ssh://git@github.com/10gen/evergreen-config-linter.git@v0.1.0#egg=evergreen_lint
-```
+Add to your requirements.txt as `evergreen-lint` (poetry: `poetry add -D evergreen-lint`)
 
 Generate a stub configuration:
 ```
@@ -24,8 +21,8 @@ doesn't fix the errors for you.
 Here's a handy guide to the errors, and how to fix them
 
 ### limit-keyval-inc
-keyval.inc is a deprecated Evergreen command used by mongodb-mongo-master. Your
-project probably shouldn't be using it
+keyval.inc is a deprecated Evergreen command used by mongodb-mongo-master for
+legacy purposes only. This rule indicates
 
 ### shell-exec-explicit-shell
 A common Evergreen footgun is using shell.exec without specifying a shell. By
@@ -34,7 +31,6 @@ except for Ubuntu, which a Dash. Dash is strictly a bourne compatible shell,
 i.e. it doesn't implement bash-isms and other features that you expect.
 
 *Solution*: Specify a shell. If you're not sure which shell, specify bash.
-
 
 ### no-working-dir-on-shell
 This rule disables the working_dir parameter on shell.exec and subprocess.exec.

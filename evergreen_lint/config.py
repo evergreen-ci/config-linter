@@ -13,7 +13,11 @@ class Rule(TypedDict, total=False):
 
 class Config(TypedDict):
     files: List[str]
+    help_url: str
     rules: List[Rule]
+
+
+DEFAULT_HELP_URL = "https://github.com/evergreen-ci/config-lint"
 
 
 def load(stream: Any, path: os.PathLike) -> Config:
@@ -26,6 +30,9 @@ def load(stream: Any, path: os.PathLike) -> Config:
             if not isinstance(file, str):
                 raise RuntimeError(f"'files', index {i}: expected a str, got a {type(file)}")
             rawconf["files"][i] = os.path.abspath(os.path.join(path, rawconf["files"][i]))
+
+        if "help_url" not in rawconf or not rawconf["help_url"]:
+            rawconf["help_url"] = DEFAULT_HELP_URL
 
         if "rules" not in rawconf or not rawconf["rules"]:
             raise RuntimeError("'rules' key: a list of rules is required")
@@ -61,10 +68,15 @@ def load_file(fh) -> Config:
         return load(handle, os.path.dirname(fh))
 
 
-STUB = """
+STUB = f"""
 # These paths are relative to the directory containing this configuration file
 files:
     - ./evergreen.yml
+
+# When errors occur, users will be get a link to this URL to help them resolve
+# lint errors. You can replace this link to a link to your team's best
+# practices document, or just leave it alone
+#help_url: {DEFAULT_HELP_URL}
 
 rules:
     # this is a list of all rules available, their parameters, and their
