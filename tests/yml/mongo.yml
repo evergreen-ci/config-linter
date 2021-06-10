@@ -7124,6 +7124,7 @@ task_groups:
     - func: "set up win mount script"
     - func: "generate compile expansions"
   teardown_group:
+    - func: "f_expansions_write"
     - func: "umount shared scons directory"
     - func: "cleanup environment"
   setup_task:
@@ -7152,6 +7153,7 @@ task_groups:
     - func: "umount shared scons directory"
   setup_task:
     - func: "set task expansion macros"
+    - func: "f_expansions_write"
     - func: "apply compile expansions"
     - func: "f_expansions_write"
   teardown_task:
@@ -7177,6 +7179,7 @@ task_groups:
     - func: "umount shared scons directory"
   setup_task:
     - func: "set task expansion macros"
+    - func: "f_expansions_write"
     - func: "apply compile expansions"
     - func: "f_expansions_write"
   teardown_task:

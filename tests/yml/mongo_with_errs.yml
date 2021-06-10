@@ -159,12 +159,9 @@ variables:
   max_hosts: 1
   tasks: []
   setup_task:
-  - func: "f_expansions_write"
   - func: "apply compile expansions"
   - func: "set task expansion macros"
-  - func: "f_expansions_write"
   teardown_task:
-  - func: "f_expansions_write"
   - func: "attach scons logs"
   - func: "attach report"
   - func: "attach artifacts"
@@ -200,7 +197,6 @@ variables:
   - command: manifest.load
   - func: "git get project"
   - func: "set task expansion macros"
-  - func: "f_expansions_write"
   - func: "kill processes"
   - func: "cleanup environment"
   # The python virtual environment is installed in ${workdir}, which is created in

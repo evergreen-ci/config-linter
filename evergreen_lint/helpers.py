@@ -42,6 +42,38 @@ def _iterator(
             for out in gen:
                 yield out
 
+    if _should_process(yaml_dict, "task_groups"):
+        for task_group in yaml_dict["task_groups"]:
+            if _in_dict_and_truthy(task_group, "setup_task"):
+                gen = selector(
+                    f"task_group '{task_group['name']}', setup_task", task_group["setup_task"]
+                )
+                for out in gen:
+                    yield out
+            if _in_dict_and_truthy(task_group, "teardown_task"):
+                gen = selector(
+                    f"task_group '{task_group['name']}', teardown_task", task_group["teardown_task"]
+                )
+                for out in gen:
+                    yield out
+            if _in_dict_and_truthy(task_group, "setup_group"):
+                gen = selector(
+                    f"task_group '{task_group['name']}', setup_group", task_group["setup_group"]
+                )
+                for out in gen:
+                    yield out
+            if _in_dict_and_truthy(task_group, "teardown_group"):
+                gen = selector(
+                    f"task_group '{task_group['name']}', teardown_group",
+                    task_group["teardown_group"],
+                )
+                for out in gen:
+                    yield out
+            if _in_dict_and_truthy(task_group, "timeout"):
+                gen = selector(f"task_group '{task_group['name']}', timeout", task_group["timeout"])
+                for out in gen:
+                    yield out
+
     if _should_process(yaml_dict, "tasks"):
         for task in yaml_dict["tasks"]:
             if _in_dict_and_truthy(task, "commands"):
@@ -106,7 +138,7 @@ def iterate_commands_context(
         # commands are either a singular dict (representing one command), or
         # a list of dicts
         if isinstance(commands, dict):
-            # never yield functions
+            # always yield functions
             if "command" in commands:
                 yield (f"{prefix}, command", commands, commands)  # type: ignore
 

@@ -64,7 +64,10 @@ def lint(ctx: click.Context) -> None:
         if not err_count:
             print(f"0 errors found in '{yaml_file}'")
         if err_count:
-            print(f"{err_count} errors found in '{yaml_file}':")
+            errors_plural = "error"
+            if err_count > 1:
+                errors_plural = "errors"
+            print(f"{err_count} {errors_plural} found in '{yaml_file}':")
             print(
                 "For help resolving errors, see the helpful documentation at "
                 f"{ctx.obj['config']['help_url']}"
