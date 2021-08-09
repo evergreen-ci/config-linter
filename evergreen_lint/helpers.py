@@ -1,6 +1,6 @@
 """Helpers for iterating over the yaml dictionary."""
 import re
-from typing import Callable, Generator, List, Tuple, Union
+from typing import Callable, Generator, List, Tuple, Union, Set
 
 _CommandList = List[dict]
 _Commands = Union[dict, _CommandList]
@@ -274,3 +274,22 @@ def iterate_command_lists(yaml_dict: dict) -> Generator[Tuple[str, _Commands], N
     gen = _iterator(yaml_dict, _helper)
     for out in gen:
         yield out  # type: ignore
+
+
+def determine_dependencies_of_task_def(task_def: dict) -> Set[str]:
+    """
+    Determine the dependencies defined in the task definition.
+
+    Dependencies can be listed as strings or dictionaries, so we need to check both.
+
+    :param task_def: Task definition to check.
+    :return: Set of all dependencies found in task definition.
+    """
+    depends_on = task_def.get("depends_on", [])
+    dependencies = set()
+    for d in depends_on:
+        if isinstance(d, dict):
+            dependencies.add(d["name"])
+        else:
+            dependencies.add(d)
+    return dependencies

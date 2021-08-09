@@ -113,6 +113,9 @@ rules:
     - rule: "required-expansions-write"
       # applicable shell script
       regex: .*\\/evergreen\\/.*\\.sh
+    # Enforce tasks that include specified functions include required dependencies
+    - rule: "dependency-for-func"
+      dependencies: {{}}
 """[
     1:-1
 ]  # <--- this strips the leading and trailing newlines from this HEREDOC
