@@ -72,6 +72,9 @@ Forbid the use of multiline values to expansions.update.
 Enforce that if a task contains a specified function, any dependencies required for
 that function are included as dependencies of that task.
 
+Since dependencies are defined at the task level, the dependency list provided in the
+configuration takes funcs as the key and a list of task names as the value.
+
 *Solution*: Add the required dependency to the task.
 
 #### Configuration
