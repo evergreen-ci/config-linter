@@ -67,3 +67,26 @@ Forbid the use of multiline values to expansions.update.
 
 *Solution*: Don't do that. If you absolutely must, see the `files` param in the
 [documentation](https://github.com/evergreen-ci/evergreen/wiki/Project-Commands#expansions-update).
+
+### dependency-for-func
+Enforce that if a task contains a specified function, any dependencies required for
+that function are included as dependencies of that task.
+
+Since dependencies are defined at the task level, the dependency list provided in the
+configuration takes funcs as the key and a list of task names as the value.
+
+*Solution*: Add the required dependency to the task.
+
+#### Configuration
+
+Which dependencies should be enforced can be configured via the lint config files. The
+configuration should use the following format:
+
+```yaml
+rules:
+  - rule: dependency-for-func
+    dependencies:
+      func_name_0: [dependency_task_0, dependency_task_1]
+      func_name_1:
+        - dependency_task_2
+```

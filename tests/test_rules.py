@@ -192,6 +192,24 @@ tasks:
         }
         self.assertTrue(h.match_subprocess_exec(cmd))
 
+    def test_determine_dependencies_of_task_def(self):
+        """Test determine_dependencies_of_task_def."""
+        self.assertEqual(h.determine_dependencies_of_task_def({}), set())
+
+        task_def = {
+            "depends_on": [
+                "task 0",
+                {"name": "task 1"},
+                {
+                    "name": "task 2",
+                    "build_variant": "build variant 0",
+                },
+            ]
+        }
+        self.assertEqual(
+            h.determine_dependencies_of_task_def(task_def), {"task 0", "task 1", "task 2"}
+        )
+
 
 class _RuleExpect(TypedDict):
     raw_yaml: str
@@ -799,3 +817,203 @@ tasks:
                 ],
             },
         ]
+
+
+class TestDependencyForFunc(unittest.TestCase):
+    def test_default_config_should_not_catch_any_issues(self):
+        evg_yaml = load(
+            """
+    tasks:
+      - name: task 1
+        depends_on: []
+        commands:
+          - func: "some function"
+          - func: "another function"
+          - command: subprocess.exec
+            type: test
+            params:
+              binary: bash
+              args:
+                - "src/run_command.sh"
+
+      - name: task 2
+        commands:
+          - func: "third function"
+          - command: subprocess.exec
+            type: test
+            params:
+              binary: bash
+              args:
+                - "src/run_another_command.sh"
+    """
+        )
+
+        rule = rules.DependencyForFunc()
+
+        violations = rule(rule.defaults(), evg_yaml)
+        self.assertEqual(violations, [])
+
+    def test_invalid_config_should_catch_a_single_issue(self):
+        rule_config = {
+            "dependencies": {
+                "some function": ["dependent task 1"],
+            }
+        }
+        evg_yaml = load(
+            """
+    tasks:
+      - name: my task 1
+        depends_on: []
+        commands:
+          - func: "some function"
+          - func: "another function"
+          - command: subprocess.exec
+            type: test
+            params:
+              binary: bash
+              args:
+                - "src/run_command.sh"
+
+      - name: my task 2
+        commands:
+          - func: "third function"
+          - command: subprocess.exec
+            type: test
+            params:
+              binary: bash
+              args:
+                - "src/run_another_command.sh"
+    """
+        )
+
+        rule = rules.DependencyForFunc()
+
+        violations = rule(rule_config, evg_yaml)
+        self.assertEqual(len(violations), 1)
+        self.assertIn("dependent task 1", violations[0])
+        self.assertIn("my task 1", violations[0])
+        self.assertIn("some function", violations[0])
+
+    def test_invalid_config_should_catch_multiple_issues(self):
+        rule_config = {
+            "dependencies": {
+                "some function": ["dependent task 1"],
+                "third function": ["dependent task 1", "dependent task 2"],
+            }
+        }
+        evg_yaml = load(
+            """
+    tasks:
+      - name: task 1
+        depends_on: []
+        commands:
+          - func: "some function"
+          - func: "another function"
+          - command: subprocess.exec
+            type: test
+            params:
+              binary: bash
+              args:
+                - "src/run_command.sh"
+
+      - name: task 2
+        commands:
+          - func: "third function"
+          - command: subprocess.exec
+            type: test
+            params:
+              binary: bash
+              args:
+                - "src/run_another_command.sh"
+    """
+        )
+
+        rule = rules.DependencyForFunc()
+
+        violations = rule(rule_config, evg_yaml)
+        self.assertEqual(len(violations), 3)
+
+    def test_valid_config_should_not_catch_any_issues(self):
+        rule_config = {
+            "dependencies": {
+                "some function": ["dependent task 1"],
+                "third function": ["dependent task 1", "dependent task 2"],
+            }
+        }
+        evg_yaml = load(
+            """
+    tasks:
+      - name: task 1
+        depends_on: 
+          - dependent task 1
+        commands:
+          - func: "some function"
+          - func: "another function"
+          - command: subprocess.exec
+            type: test
+            params:
+              binary: bash
+              args:
+                - "src/run_command.sh"
+
+      - name: task 2
+        depends_on: ["dependent task 1", "dependent task 2"]
+        commands:
+          - func: "third function"
+          - command: subprocess.exec
+            type: test
+            params:
+              binary: bash
+              args:
+                - "src/run_another_command.sh"
+    """
+        )
+
+        rule = rules.DependencyForFunc()
+
+        violations = rule(rule_config, evg_yaml)
+        self.assertEqual(violations, [])
+
+    def test_dependencies_listed_as_dictionaries_should_be_valid(self):
+        rule_config = {
+            "dependencies": {
+                "some function": ["dependent task 1"],
+                "third function": ["dependent task 1", "dependent task 2"],
+            }
+        }
+        evg_yaml = load(
+            """
+    tasks:
+      - name: task 1
+        depends_on: 
+          - dependent task 1
+        commands:
+          - func: "some function"
+          - func: "another function"
+          - command: subprocess.exec
+            type: test
+            params:
+              binary: bash
+              args:
+                - "src/run_command.sh"
+
+      - name: task 2
+        depends_on: 
+          - name: "dependent task 1"
+          - name: "dependent task 2"
+            build_variant: some build variant
+        commands:
+          - func: "third function"
+          - command: subprocess.exec
+            type: test
+            params:
+              binary: bash
+              args:
+                - "src/run_another_command.sh"
+    """
+        )
+
+        rule = rules.DependencyForFunc()
+
+        violations = rule(rule_config, evg_yaml)
+        self.assertEqual(violations, [])
