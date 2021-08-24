@@ -293,3 +293,6 @@ def determine_dependencies_of_task_def(task_def: dict) -> Set[str]:
         else:
             dependencies.add(d)
     return dependencies
+
+
+SHELL_COMMANDS = ["subprocess.exec", "subprocess.scripting", "shell.exec"]

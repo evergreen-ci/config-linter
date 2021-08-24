@@ -6,6 +6,13 @@ from typing import List
 from typing_extensions import TypedDict
 
 import evergreen_lint.helpers as h
+import evergreen_lint.rules.dependency_for_func
+
+import evergreen_lint.rules.required_expansions_write
+
+import evergreen_lint.rules.invalid_build_parameter
+
+import evergreen_lint.rules.commonsense
 from evergreen_lint import rules
 from evergreen_lint.model import LintError, Rule
 from evergreen_lint.yamlhandler import load
@@ -258,7 +265,7 @@ class TestLimitKeyvalInc(_BaseTestClasses.RuleTest):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.func = rules.LimitKeyvalInc()
+        self.func = evergreen_lint.rules.commonsense.LimitKeyvalInc()
         self.table = [
             {
                 "raw_yaml": """
@@ -292,7 +299,7 @@ class TestShellExecExplicitShell(_BaseTestClasses.RuleTest):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.func = rules.ShellExecExplicitShell()
+        self.func = evergreen_lint.rules.commonsense.ShellExecExplicitShell()
         self.table = [
             {
                 "raw_yaml": """
@@ -330,7 +337,7 @@ class TestNoWorkingDirOnShell(_BaseTestClasses.RuleTest):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.func = rules.NoWorkingDirOnShell()
+        self.func = evergreen_lint.rules.commonsense.NoWorkingDirOnShell()
         self.table = [
             {
                 "raw_yaml": """
@@ -369,7 +376,7 @@ class TestInvalidFunctionName(_BaseTestClasses.RuleTest):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.func = rules.InvalidFunctionName()
+        self.func = evergreen_lint.rules.commonsense.InvalidFunctionName()
         self.table = [
             {
                 "raw_yaml": """
@@ -405,7 +412,7 @@ class TestNoShellExec(_BaseTestClasses.RuleTest):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.func = rules.NoShellExec()
+        self.func = evergreen_lint.rules.commonsense.NoShellExec()
         self.table = [
             {
                 "raw_yaml": """
@@ -443,7 +450,7 @@ class TestNoMultilineExpansionsUpdate(_BaseTestClasses.RuleTest):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.func = rules.NoMultilineExpansionsUpdate()
+        self.func = evergreen_lint.rules.commonsense.NoMultilineExpansionsUpdate()
         self.table = [
             {
                 "raw_yaml": """
@@ -492,7 +499,7 @@ class TestInvalidBuildParameter(_BaseTestClasses.RuleTest):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.func = rules.InvalidBuildParameter()
+        self.func = evergreen_lint.rules.invalid_build_parameter.InvalidBuildParameter()
         self.table = [
             {
                 "raw_yaml": """
@@ -537,7 +544,7 @@ class TestRequiredExpansionsWrite(_BaseTestClasses.RuleTest):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.func = rules.RequiredExpansionsWrite()
+        self.func = evergreen_lint.rules.required_expansions_write.RequiredExpansionsWrite()
         self.table = [
             {
                 "raw_yaml": """
@@ -848,7 +855,7 @@ class TestDependencyForFunc(unittest.TestCase):
     """
         )
 
-        rule = rules.DependencyForFunc()
+        rule = evergreen_lint.rules.dependency_for_func.DependencyForFunc()
 
         violations = rule(rule.defaults(), evg_yaml)
         self.assertEqual(violations, [])
@@ -886,7 +893,7 @@ class TestDependencyForFunc(unittest.TestCase):
     """
         )
 
-        rule = rules.DependencyForFunc()
+        rule = evergreen_lint.rules.dependency_for_func.DependencyForFunc()
 
         violations = rule(rule_config, evg_yaml)
         self.assertEqual(len(violations), 1)
@@ -928,7 +935,7 @@ class TestDependencyForFunc(unittest.TestCase):
     """
         )
 
-        rule = rules.DependencyForFunc()
+        rule = evergreen_lint.rules.dependency_for_func.DependencyForFunc()
 
         violations = rule(rule_config, evg_yaml)
         self.assertEqual(len(violations), 3)
@@ -969,7 +976,7 @@ class TestDependencyForFunc(unittest.TestCase):
     """
         )
 
-        rule = rules.DependencyForFunc()
+        rule = evergreen_lint.rules.dependency_for_func.DependencyForFunc()
 
         violations = rule(rule_config, evg_yaml)
         self.assertEqual(violations, [])
@@ -1013,7 +1020,7 @@ class TestDependencyForFunc(unittest.TestCase):
     """
         )
 
-        rule = rules.DependencyForFunc()
+        rule = evergreen_lint.rules.dependency_for_func.DependencyForFunc()
 
         violations = rule(rule_config, evg_yaml)
         self.assertEqual(violations, [])
