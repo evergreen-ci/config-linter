@@ -5,7 +5,7 @@ from typing import Dict, List, Optional
 
 import click
 
-from evergreen_lint.config import STUB
+from evergreen_lint.config import STUB, load_config
 from evergreen_lint.model import LintError
 from evergreen_lint.rules import RULES
 from evergreen_lint.yamlhandler import load_file
@@ -19,7 +19,7 @@ def main(ctx: click.Context, config: Optional[os.PathLike]) -> None:
     ctx.obj["config"] = None
     if config is not None:
         click.echo(f"Load config file: {config}")
-        ctx.obj["config"] = load_file(config)
+        ctx.obj["config"] = load_config(config)
 
 
 @main.command()
