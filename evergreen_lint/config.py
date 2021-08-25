@@ -111,6 +111,9 @@ rules:
     # Enforce tasks that include specified functions include required dependencies
     - rule: "dependency-for-func"
       dependencies: {{}}
+    # Enforce variants must run the specified list of tasks
+    - rule: "tasks-for-variants"
+      task-variant-mappings: {{}}
 """[
     1:-1
 ]  # <--- this strips the leading and trailing newlines from this HEREDOC
