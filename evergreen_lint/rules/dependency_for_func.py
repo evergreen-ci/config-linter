@@ -1,7 +1,7 @@
 from typing import List
 
 from evergreen_lint.helpers import determine_dependencies_of_task_def
-from evergreen_lint.model import Rule, LintError
+from evergreen_lint.model import LintError, Rule
 
 
 class DependencyForFunc(Rule):

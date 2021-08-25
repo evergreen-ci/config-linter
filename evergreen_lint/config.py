@@ -63,11 +63,6 @@ def load(stream: Any, path: os.PathLike) -> Config:
         raise RuntimeError(f"config file invalid: {str(e)}")
 
 
-def load_file(fh) -> Config:
-    with open(fh, "r") as handle:
-        return load(handle, os.path.dirname(fh))
-
-
 STUB = f"""
 # These paths are relative to the directory containing this configuration file
 files:

@@ -1,7 +1,7 @@
 import re
 from typing import List
 
-from evergreen_lint.model import Rule, LintError
+from evergreen_lint.model import LintError, Rule
 
 
 class InvalidBuildParameter(Rule):

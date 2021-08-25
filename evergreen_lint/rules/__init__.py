@@ -2,18 +2,18 @@
 from typing import Dict, Type
 
 from evergreen_lint.model import Rule
-from evergreen_lint.rules.dependency_for_func import DependencyForFunc
-from evergreen_lint.rules.required_expansions_write import RequiredExpansionsWrite
-from evergreen_lint.rules.invalid_build_parameter import InvalidBuildParameter
-from evergreen_lint.rules.tasks_for_variants import TasksForVariants
 from evergreen_lint.rules.commonsense import (
-    LimitKeyvalInc,
-    ShellExecExplicitShell,
-    NoWorkingDirOnShell,
     InvalidFunctionName,
-    NoShellExec,
+    LimitKeyvalInc,
     NoMultilineExpansionsUpdate,
+    NoShellExec,
+    NoWorkingDirOnShell,
+    ShellExecExplicitShell,
 )
+from evergreen_lint.rules.dependency_for_func import DependencyForFunc
+from evergreen_lint.rules.invalid_build_parameter import InvalidBuildParameter
+from evergreen_lint.rules.required_expansions_write import RequiredExpansionsWrite
+from evergreen_lint.rules.tasks_for_variants import TasksForVariants
 
 RULES: Dict[str, Type[Rule]] = {
     "limit-keyval-inc": LimitKeyvalInc,

@@ -2,7 +2,7 @@ from typing import List, Optional, Set
 
 from evergreen_lint import helpers as helpers
 from evergreen_lint.helpers import iterate_command_lists, iterate_fn_calls_context
-from evergreen_lint.model import Rule, LintError
+from evergreen_lint.model import LintError, Rule
 
 
 class RequiredExpansionsWrite(Rule):

@@ -1,8 +1,8 @@
 import re
 from typing import List
 
-from evergreen_lint.helpers import iterate_commands, SHELL_COMMANDS
-from evergreen_lint.model import Rule, LintError
+from evergreen_lint.helpers import SHELL_COMMANDS, iterate_commands
+from evergreen_lint.model import LintError, Rule
 
 
 class LimitKeyvalInc(Rule):

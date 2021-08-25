@@ -1,6 +1,6 @@
 """Helpers for iterating over the yaml dictionary."""
 import re
-from typing import Callable, Generator, List, Tuple, Union, Set
+from typing import Callable, Generator, List, Set, Tuple, Union
 
 _CommandList = List[dict]
 _Commands = Union[dict, _CommandList]
