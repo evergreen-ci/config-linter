@@ -94,6 +94,9 @@ class TasksForVariants(Rule):
             expected_tasks = config_wrapper.tasks_for_variant(variant)
             actual_tasks = self._get_task_set_from_list(variant_obj["tasks"])
 
+            if expected_tasks is None:
+                continue
+
             if expected_tasks != actual_tasks:
                 failed_checks.append(
                     error_msg.format(variant=variant, expected=expected_tasks, actual=actual_tasks)
