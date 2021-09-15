@@ -1,7 +1,7 @@
 import re
 from typing import List
 
-from evergreen_lint.helpers import SHELL_COMMANDS, iterate_commands
+from evergreen_lint.helpers import is_shell_command, iterate_commands
 from evergreen_lint.model import LintError, Rule
 
 
@@ -84,7 +84,7 @@ class NoWorkingDirOnShell(Rule):
 
         out: List[LintError] = []
         for context, command in iterate_commands(yaml):
-            if "command" in command and command["command"] in SHELL_COMMANDS:
+            if "command" in command and is_shell_command(command["command"]):
                 if "params" in command and "working_dir" in command["params"]:
                     out.append(_out_message(context, command["command"]))
 
