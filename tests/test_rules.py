@@ -944,7 +944,7 @@ class TestDependencyForFunc(unittest.TestCase):
             """
     tasks:
       - name: task 1
-        depends_on: 
+        depends_on:
           - dependent task 1
         commands:
           - func: "some function"
@@ -985,7 +985,7 @@ class TestDependencyForFunc(unittest.TestCase):
             """
     tasks:
       - name: task 1
-        depends_on: 
+        depends_on:
           - dependent task 1
         commands:
           - func: "some function"
@@ -998,7 +998,7 @@ class TestDependencyForFunc(unittest.TestCase):
                 - "src/run_command.sh"
 
       - name: task 2
-        depends_on: 
+        depends_on:
           - name: "dependent task 1"
           - name: "dependent task 2"
             build_variant: some build variant

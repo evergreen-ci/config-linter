@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, cast
 
 from evergreen_lint.helpers import determine_dependencies_of_task_def
 from evergreen_lint.model import LintError, Rule
@@ -34,7 +34,7 @@ class DependencyForFunc(Rule):
         )
         failed_checks = []
         dependency_map = config.get("dependencies", {})
-        for task_def in yaml.get("tasks"):
+        for task_def in cast(List, yaml.get("tasks")):
             actual_dependencies = determine_dependencies_of_task_def(task_def)
             funcs = [cmd["func"] for cmd in task_def.get("commands", []) if "func" in cmd]
             for func in funcs:

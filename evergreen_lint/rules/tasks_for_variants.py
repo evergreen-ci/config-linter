@@ -1,12 +1,13 @@
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional, Set, cast
 
 from evergreen_lint.model import LintError, Rule
 
 TasksSet = Set[str]
+TaskVariantMapping = List[Dict[str, List[str]]]
 
 
 class TasksForVariantsConfig:
-    def __init__(self, raw_mappings: List[dict], failed_checks: List[LintError]):
+    def __init__(self, raw_mappings: TaskVariantMapping, failed_checks: List[LintError]):
         self._variant_mappings: Dict[str, TasksSet] = {}
         self.unused_variants: Set[str] = set()
 
@@ -75,9 +76,11 @@ class TasksForVariants(Rule):
             "Mismatched task list for variant '{variant}'. Expected '{expected}', got '{actual}'"
         )
 
-        failed_checks = []
+        failed_checks: List[str] = []
 
-        config_wrapper = TasksForVariantsConfig(config.get("task-variant-mappings"), failed_checks)
+        config_wrapper = TasksForVariantsConfig(
+            cast(TaskVariantMapping, config.get("task-variant-mappings")), failed_checks
+        )
 
         variants = yaml.get("buildvariants", [])
         if variants is None:
