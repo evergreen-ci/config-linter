@@ -1,15 +1,16 @@
-from typing import List
+from typing import Dict, List, Optional, Set
 
 from evergreen_lint.model import LintError, Rule
 
+TasksSet = Set[str]
 
-class TasksForVariantsConfig(object):
-    def __init__(self, raw_mappings, failed_checks):
-        self._raw_mappings = raw_mappings
-        self._variant_mappings = {}
-        self._unused_variants = set()
 
-        for mapping in self._raw_mappings:
+class TasksForVariantsConfig:
+    def __init__(self, raw_mappings: List[dict], failed_checks: List[LintError]):
+        self._variant_mappings: Dict[str, TasksSet] = {}
+        self.unused_variants: Set[str] = set()
+
+        for mapping in raw_mappings:
             tasks = set(mapping["tasks"])
             for variant in mapping["variants"]:
                 # Each variant can only be defined with one set of tasks.
@@ -18,20 +19,14 @@ class TasksForVariantsConfig(object):
                         f"Invalid linter config: '{variant}' appeared more than once"
                     )
                 self._variant_mappings[variant] = tasks
-                self._unused_variants.add(variant)
+                self.unused_variants.add(variant)
 
-    def tasks_for_variant(self, variant):
+    def tasks_for_variant(self, variant: str) -> Optional[TasksSet]:
 
         res = self._variant_mappings.get(variant, None)
         if res is not None:
-            self._unused_variants.remove(variant)
+            self.unused_variants.remove(variant)
         return res
-
-    def assert_no_unused_variants(self, failed_checks):
-        if self._unused_variants:
-            failed_checks.append(
-                f"Invalid linter config: unknown variant names: {self._unused_variants}"
-            )
 
 
 class TasksForVariants(Rule):
@@ -82,8 +77,7 @@ class TasksForVariants(Rule):
 
         failed_checks = []
 
-        mappings = config.get("task-variant-mappings")
-        config_wrapper = TasksForVariantsConfig(mappings, failed_checks)
+        config_wrapper = TasksForVariantsConfig(config.get("task-variant-mappings"), failed_checks)
 
         variants = yaml.get("buildvariants", [])
         if variants is None:
@@ -102,6 +96,9 @@ class TasksForVariants(Rule):
                     error_msg.format(variant=variant, expected=expected_tasks, actual=actual_tasks)
                 )
 
-        config_wrapper.assert_no_unused_variants(failed_checks)
+        if config_wrapper.unused_variants:
+            failed_checks.append(
+                f"Invalid linter config: unknown variant names: {config_wrapper.unused_variants}"
+            )
 
         return failed_checks
