@@ -5,8 +5,7 @@ from typing import Dict, List, Optional
 
 import click
 
-from evergreen_lint.config import STUB
-from evergreen_lint.config import load_file as load_config
+from evergreen_lint.config import STUB, load_config
 from evergreen_lint.model import LintError
 from evergreen_lint.rules import RULES
 from evergreen_lint.yamlhandler import load_file

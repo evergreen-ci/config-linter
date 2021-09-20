@@ -63,7 +63,7 @@ def load(stream: Any, path: os.PathLike) -> Config:
         raise RuntimeError(f"config file invalid: {str(e)}")
 
 
-def load_file(fh) -> Config:
+def load_config(fh) -> Config:
     with open(fh, "r") as handle:
         return load(handle, os.path.dirname(fh))
 
@@ -116,6 +116,9 @@ rules:
     # Enforce tasks that include specified functions include required dependencies
     - rule: "dependency-for-func"
       dependencies: {{}}
+    # Enforce variants must run the specified list of tasks
+    - rule: "tasks-for-variants"
+      task-variant-mappings: {{}}
 """[
     1:-1
 ]  # <--- this strips the leading and trailing newlines from this HEREDOC

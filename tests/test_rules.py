@@ -258,7 +258,7 @@ class TestLimitKeyvalInc(_BaseTestClasses.RuleTest):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.func = rules.LimitKeyvalInc()
+        self.func = rules.commonsense.LimitKeyvalInc()
         self.table = [
             {
                 "raw_yaml": """
@@ -292,7 +292,7 @@ class TestShellExecExplicitShell(_BaseTestClasses.RuleTest):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.func = rules.ShellExecExplicitShell()
+        self.func = rules.commonsense.ShellExecExplicitShell()
         self.table = [
             {
                 "raw_yaml": """
@@ -330,7 +330,7 @@ class TestNoWorkingDirOnShell(_BaseTestClasses.RuleTest):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.func = rules.NoWorkingDirOnShell()
+        self.func = rules.commonsense.NoWorkingDirOnShell()
         self.table = [
             {
                 "raw_yaml": """
@@ -369,7 +369,7 @@ class TestInvalidFunctionName(_BaseTestClasses.RuleTest):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.func = rules.InvalidFunctionName()
+        self.func = rules.commonsense.InvalidFunctionName()
         self.table = [
             {
                 "raw_yaml": """
@@ -405,7 +405,7 @@ class TestNoShellExec(_BaseTestClasses.RuleTest):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.func = rules.NoShellExec()
+        self.func = rules.commonsense.NoShellExec()
         self.table = [
             {
                 "raw_yaml": """
@@ -443,7 +443,7 @@ class TestNoMultilineExpansionsUpdate(_BaseTestClasses.RuleTest):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.func = rules.NoMultilineExpansionsUpdate()
+        self.func = rules.commonsense.NoMultilineExpansionsUpdate()
         self.table = [
             {
                 "raw_yaml": """
@@ -492,7 +492,7 @@ class TestInvalidBuildParameter(_BaseTestClasses.RuleTest):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.func = rules.InvalidBuildParameter()
+        self.func = rules.invalid_build_parameter.InvalidBuildParameter()
         self.table = [
             {
                 "raw_yaml": """
@@ -537,7 +537,7 @@ class TestRequiredExpansionsWrite(_BaseTestClasses.RuleTest):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.func = rules.RequiredExpansionsWrite()
+        self.func = rules.required_expansions_write.RequiredExpansionsWrite()
         self.table = [
             {
                 "raw_yaml": """
@@ -848,7 +848,7 @@ class TestDependencyForFunc(unittest.TestCase):
     """
         )
 
-        rule = rules.DependencyForFunc()
+        rule = rules.dependency_for_func.DependencyForFunc()
 
         violations = rule(rule.defaults(), evg_yaml)
         self.assertEqual(violations, [])
@@ -886,7 +886,7 @@ class TestDependencyForFunc(unittest.TestCase):
     """
         )
 
-        rule = rules.DependencyForFunc()
+        rule = rules.dependency_for_func.DependencyForFunc()
 
         violations = rule(rule_config, evg_yaml)
         self.assertEqual(len(violations), 1)
@@ -928,7 +928,7 @@ class TestDependencyForFunc(unittest.TestCase):
     """
         )
 
-        rule = rules.DependencyForFunc()
+        rule = rules.dependency_for_func.DependencyForFunc()
 
         violations = rule(rule_config, evg_yaml)
         self.assertEqual(len(violations), 3)
@@ -944,7 +944,7 @@ class TestDependencyForFunc(unittest.TestCase):
             """
     tasks:
       - name: task 1
-        depends_on: 
+        depends_on:
           - dependent task 1
         commands:
           - func: "some function"
@@ -969,7 +969,7 @@ class TestDependencyForFunc(unittest.TestCase):
     """
         )
 
-        rule = rules.DependencyForFunc()
+        rule = rules.dependency_for_func.DependencyForFunc()
 
         violations = rule(rule_config, evg_yaml)
         self.assertEqual(violations, [])
@@ -985,7 +985,7 @@ class TestDependencyForFunc(unittest.TestCase):
             """
     tasks:
       - name: task 1
-        depends_on: 
+        depends_on:
           - dependent task 1
         commands:
           - func: "some function"
@@ -998,7 +998,7 @@ class TestDependencyForFunc(unittest.TestCase):
                 - "src/run_command.sh"
 
       - name: task 2
-        depends_on: 
+        depends_on:
           - name: "dependent task 1"
           - name: "dependent task 2"
             build_variant: some build variant

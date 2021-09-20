@@ -1,6 +1,6 @@
 """Helpers for iterating over the yaml dictionary."""
 import re
-from typing import Callable, Generator, List, Tuple, Union, Set
+from typing import Callable, Generator, List, Set, Tuple, Union
 
 _CommandList = List[dict]
 _Commands = Union[dict, _CommandList]
@@ -293,3 +293,10 @@ def determine_dependencies_of_task_def(task_def: dict) -> Set[str]:
         else:
             dependencies.add(d)
     return dependencies
+
+
+_SHELL_COMMANDS = ["subprocess.exec", "subprocess.scripting", "shell.exec"]
+
+
+def is_shell_command(command):
+    return command in _SHELL_COMMANDS
