@@ -237,8 +237,8 @@ class _BaseTestClasses:
                 raise RuntimeError("Programmer error: func was not set")
 
         def __init__(self, *args, **kwargs):
-            self.table: List[_RuleExpect] = []
-            self.func: Rule = self._whine
+            self.table: List[_RuleExpect] = []  # type: ignore
+            self.func: Rule = self._whine  # type: ignore
             super().__init__(*args, **kwargs)
             self.maxDiff = None  # pylint: disable=invalid-name
 

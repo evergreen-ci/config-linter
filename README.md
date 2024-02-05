@@ -90,3 +90,27 @@ rules:
       func_name_1:
         - dependency_task_2
 ```
+
+### enforce-tags-for-tasks
+Enforce tags presence in task definitions.
+
+#### Configuration
+
+Which task tags should be enforced can be configured via the lint config files. The
+configuration should use the following format:
+
+```yaml
+rules:
+  - rule: "enforce-tags-for-tasks"
+    tag_groups:
+      - group_name: "tag_group_name"
+        # the rule will fail, if tag matches the regex and do not match any tag from `tag_list`
+        tag_regex: required_tag_.+
+        tag_list:
+          - required_tag_test_1
+          - required_tag_test_2
+          - required_tag_test_3
+        # the rule will fail, if the number of tags is less than `min_num_of_tags` or more than `max_num_of_tags`
+        min_num_of_tags: 1
+        max_num_of_tags: 1
+```

@@ -89,18 +89,23 @@ rules:
 
     # Require that shell.exec invocations explicitly set their shell
     - rule: "shell-exec-explicit-shell"
+
     # Do not allow working_dir to be set on shell.exec, and subprocess.exec
     - rule: "no-working-dir-on-shell"
+
     # Lint the names of functions using the given regex
     - rule: "invalid-function-name"
       # a Python3 re compatible regex to describe a valid function name
       # You are strongly advised to leave the optional quotes around the regex
       # to avoid subtle bugs introduced by YAML parsing.
       regex: "^f_[a-z][A-Za-z0-9_]*"
+
     # Do not allow use of shell.exec (Use subprocess.exec)
     - rule: "no-shell-exec"
+
     # Do not allow multi-line values for expansions.update
     - rule: "no-multiline-expansions-update"
+
     # Lint build parameter names using the given regex, and optionally require
     # descriptions for the parameter
     - rule: "invalid-build-parameter"
@@ -108,17 +113,24 @@ rules:
       regex: "[a-z][a-z0-9_]*"
       # if true, require a non-empty description for the parameter.
       require-description: true
+
     # Require expansions.write to be placed before subprocess.exec commands
     # for scripts that match the given regex
     - rule: "required-expansions-write"
       # applicable shell script
       regex: .*\\/evergreen\\/.*\\.sh
+
     # Enforce tasks that include specified functions include required dependencies
     - rule: "dependency-for-func"
       dependencies: {{}}
+
     # Enforce variants must run the specified list of tasks
     - rule: "tasks-for-variants"
       task-variant-mappings: {{}}
+
+    # Enforce tasks must have tags
+    - rule: "enforce-tags-for-tasks"
+      tag_groups: {[]}
 """[
     1:-1
 ]  # <--- this strips the leading and trailing newlines from this HEREDOC
