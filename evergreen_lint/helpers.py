@@ -1,6 +1,6 @@
 """Helpers for iterating over the yaml dictionary."""
 import re
-from typing import Callable, Generator, List, Set, Tuple, Union
+from typing import Callable, Generator, List, Optional, Set, Tuple, Union
 
 _CommandList = List[dict]
 _Commands = Union[dict, _CommandList]
@@ -26,7 +26,7 @@ def iterate_commands(yaml_dict: dict) -> Generator[Tuple[str, dict], None, None]
 
 # pylint: disable=too-many-branches
 def _iterator(
-    yaml_dict: dict, selector: _Selector, skip_blocks: List[str] = None
+    yaml_dict: dict, selector: _Selector, skip_blocks: Optional[List[str]] = None
 ) -> Generator[Tuple[str, _Commands, _Commands], None, None]:
     def _should_process(yaml_dict: dict, key: str) -> bool:
         if skip_blocks and key in skip_blocks:
@@ -116,7 +116,7 @@ def _iterator(
 
 
 def iterate_commands_context(
-    yaml_dict: dict, skip_blocks: List[str] = None
+    yaml_dict: dict, skip_blocks: Optional[List[str]] = None
 ) -> Generator[Tuple[str, _Commands, _Commands], None, None]:
     """Return a Generator that yields commands from the yaml dict.
 

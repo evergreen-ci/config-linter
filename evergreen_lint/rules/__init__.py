@@ -11,6 +11,7 @@ from evergreen_lint.rules.commonsense import (
     ShellExecExplicitShell,
 )
 from evergreen_lint.rules.dependency_for_func import DependencyForFunc
+from evergreen_lint.rules.enforce_tags_for_tasks import EnforceTagsForTasks
 from evergreen_lint.rules.invalid_build_parameter import InvalidBuildParameter
 from evergreen_lint.rules.required_expansions_write import RequiredExpansionsWrite
 from evergreen_lint.rules.tasks_for_variants import TasksForVariants
@@ -26,6 +27,7 @@ RULES: Dict[str, Type[Rule]] = {
     "required-expansions-write": RequiredExpansionsWrite,
     "dependency-for-func": DependencyForFunc,
     "tasks-for-variants": TasksForVariants,
+    "enforce-tags-for-tasks": EnforceTagsForTasks,
 }
 # Thoughts on Writing Rules
 # - see .helpers for reliable iteration helpers
