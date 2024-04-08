@@ -76,7 +76,7 @@ class EnforceTagsForTasks(Rule):
         failed_checks = []
         rule_config = EnforceTagsForTasksConfig.from_config_dict(config)
 
-        for task_def in cast(List, yaml.get("tasks")):
+        for task_def in cast(List, yaml.get("tasks", [])):
             actual_tags = task_def.get("tags")
             actual_tags_set = set()
             if actual_tags is not None:

@@ -131,6 +131,10 @@ rules:
     # Enforce tasks must have tags
     - rule: "enforce-tags-for-tasks"
       tag_groups: {[]}
+
+    # Enforce variants must have tags
+    - rule: "enforce-tags-for-variants"
+      tags: {[]}
 """[
     1:-1
 ]  # <--- this strips the leading and trailing newlines from this HEREDOC

@@ -114,3 +114,25 @@ rules:
         min_num_of_tags: 1
         max_num_of_tags: 1
 ```
+
+
+### enforce-tags-for-variants
+Enforce tags presence in variant definitions.
+
+#### Configuration
+
+Which variant tags should be enforced can be configured via the lint config files. The
+configuration should use the following format:
+
+```yaml
+rules:
+  - rule: "enforce-tags-for-variants"
+    tags:
+      # the rule will fail if the variant has matching configuration
+      # and is not tagged with the tag that matches tag_name
+      # and vice-versa
+      - tag_name: "required"
+        variant_config:
+          name_regex: ".*"
+          display_name_regex: "^!.+$"
+```
