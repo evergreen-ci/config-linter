@@ -1,4 +1,4 @@
-from typing import List, Optional, Set
+from typing import List, Optional, Set, Union
 
 from evergreen_lint import helpers as helpers
 from evergreen_lint.helpers import iterate_command_lists, iterate_fn_calls_context
@@ -21,24 +21,26 @@ class RequiredExpansionsWrite(Rule):
     def __call__(self, config: dict, yaml: dict) -> List[LintError]:
 
         # This logic is well and truly awful.
+        #
         # Here's the problem:
+        #
         # 1. Evergreen functions can have a dict or list definition. Functions
         # with a dict definition, that is:
         #   "f_my_fn": &f_my_fn
         #     command: shell.exec
-        # can called either as "- func: f_my_fn" or as *f_my_fn. The former syntax
-        # can have arguments passed into it. The latter syntax,
+        # can be called either as "- func: f_my_fn" or as *f_my_fn. The former
+        # syntax can have arguments passed into it. The latter syntax,
         # i.e. the use of the YAML anchor, is used to workaround Evergreen not
         # allowing functions to call other functions. Arguments cannot be passed in
         # when the YAML anchor syntax is used.
-
+        #
         # This poses a problem: if the user calls a function with a dict definition,
         # and that function has arguments passed in, and that function calls
         # subprocess.exec, then the function will not have its expansions populated
         # in the external script as expected. It must be defined as a list, and
         # incorporate an expansions.write call, or not be called with args.
         # See Resolution 1.
-
+        #
         # Functions with a list definition, that is:
         #   "f_my_fn2": &f_my_fn2
         #     - command: shell.exec
@@ -49,24 +51,27 @@ class RequiredExpansionsWrite(Rule):
         #
         # 2. Expansions can be defined/changed at any step of the way by Evergreen,
         # function arguments, build variants, Evergreen projects, tasks. Expansions
-        # written to disk MUST be up to date. See Resolution 2
+        # written to disk MUST be up-to-date. See Resolution 2
+        #
         # 3. Expansions be updated after expansions.update, but before
         # subprocess.exec. See Resolution 3.
-
+        #
         # Resolutions:
         # Given the above, here are the checks we need to perform
         # 1. Any function defined with a dict definition that calls subprocess.exec
         # MUST NOT be called with arguments.
+        #
         # 2. expansions.write MUST be called prior to invoking subprocess.exec for
         # the first time in any command list.
         # (i.e. in tasks: commands, setup_task, setup_group, teardown_task,
-        # teardown_group, timeout,, globally: pre, post, timeout, functions with
+        # teardown_group, timeout, globally: pre, post, timeout, functions with
         # list definitions)
         # When paired with Resolution 3, this works all the time (but does
         # sometimes require redundant expansions.write calls)
+        #
         # 3. Every invocation of expansions.update MUST be immediately followed by
         # expansions.write
-
+        #
         # 4. It makes sense to place your expansions.write call in a dict
         # definition function, that way you can call it with either syntax. So, in
         # the above passage where I've mentioned "expansions.write", we must not
@@ -86,10 +91,12 @@ class RequiredExpansionsWrite(Rule):
         # 6. And because that's not complicated enough, any functions that are
         # dict-defined with subprocess.exec must be treated as equivalent to
         # subprocess.exec on its own.
+        #
         # 7. Functions that call expansions.update, and are dict-defined MUST
         # require an expansions.update call after they are called, regardless of
         # syntax
-        # 8. timeout.update can also affect expansion values, and all of the rules
+        #
+        # 8. timeout.update can also affect expansion values, and all the rules
         # above need to applied equally to timeout.update
 
         # These are functions that invoke expansions.write in a dict defintion,
@@ -112,6 +119,15 @@ class RequiredExpansionsWrite(Rule):
 
         def _out_message_subprocess(context: str) -> LintError:
             return f"{context} calls an evergreen shell script without a preceding expansions.write call. Always call expansions.write with params: file: expansions.yml; redacted: true, (or use one of these functions: {list(expansions_write_fns)}) before calling an evergreen shell script via subprocess.exec."  # noqa: E501
+
+        def _is_one_command_fn(body: Union[dict, List[dict]], ctx: Optional[str] = None) -> bool:
+            if ctx is not None and "Function" not in ctx:
+                return False
+            if isinstance(body, dict):
+                return True
+            if isinstance(body, list):
+                return len(body) == 1
+            return False
 
         def _is_expansions_write_or_fn(command: dict) -> bool:
             return helpers.match_expansions_write(command) or (
@@ -139,7 +155,7 @@ class RequiredExpansionsWrite(Rule):
 
             return context
 
-        def _check_command_list(context: str, commands: List[dict]) -> List[LintError]:
+        def _check_command_list(context: str, commands: Union[dict, List[dict]]) -> List[LintError]:
             out: List[LintError] = []
             first_subprocess: Optional[int] = None
             first_subprocess_cmd: Optional[dict] = None
@@ -204,26 +220,33 @@ class RequiredExpansionsWrite(Rule):
             return out
 
         out: List[LintError] = []
-        if "functions" in yaml:
-            for fname, body in yaml["functions"].items():
-                if isinstance(body, dict):
-                    # assemble the list of functions whose bodies are the expected
-                    # expansions.write call. (Resolution 4)
-                    if helpers.match_expansions_write(body):
-                        expansions_write_fns.add(fname)
-                    # assemble the list of functions that must never be called
-                    # with arguments (Resolution 1)
-                    elif helpers.match_subprocess_exec(body):
-                        subprocess_exec_fns.add(fname)
-                    # Resolution 7
-                    elif helpers.match_expansions_update(body):
-                        expansions_update_fns.add(fname)
-                    # Resolution 8
-                    elif helpers.match_timeout_update(body):
-                        timeout_update_fns.add(fname)
+        for func_name, full_func_body in yaml.get("functions", {}).items():
+            if not _is_one_command_fn(full_func_body):
+                continue
+
+            func_body = full_func_body
+            if isinstance(full_func_body, list):
+                func_body = full_func_body[0]
+            if not isinstance(func_body, dict):
+                continue
+
+            # assemble the list of functions whose bodies are the expected
+            # expansions.write call. (Resolution 4)
+            if helpers.match_expansions_write(func_body):
+                expansions_write_fns.add(func_name)
+            # assemble the list of functions that must never be called
+            # with arguments (Resolution 1)
+            elif helpers.match_subprocess_exec(func_body):
+                subprocess_exec_fns.add(func_name)
+            # Resolution 7
+            elif helpers.match_expansions_update(func_body):
+                expansions_update_fns.add(func_name)
+            # Resolution 8
+            elif helpers.match_timeout_update(func_body):
+                timeout_update_fns.add(func_name)
 
         for context, commands in iterate_command_lists(yaml):
-            if isinstance(commands, dict):
+            if _is_one_command_fn(commands, context):
                 continue
             out += _check_command_list(context, commands)
 

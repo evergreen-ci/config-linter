@@ -7,7 +7,7 @@ from evergreen_lint.rules import RULES
 
 
 def test_version():
-    assert __version__ == "0.1.6"
+    assert __version__ == "0.1.7"
 
 
 def test_stub_formatting():
