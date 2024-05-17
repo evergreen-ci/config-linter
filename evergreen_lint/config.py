@@ -135,6 +135,11 @@ rules:
     # Enforce variants must have tags
     - rule: "enforce-tags-for-variants"
       tags: {[]}
+
+    # Validate variant expansions
+    - rule: "variant-expansions"
+      require_expansions: {[]}
+      prohibit_expansions: {[]}
 """[
     1:-1
 ]  # <--- this strips the leading and trailing newlines from this HEREDOC

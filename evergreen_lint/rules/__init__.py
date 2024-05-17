@@ -16,6 +16,7 @@ from evergreen_lint.rules.enforce_tags_for_variants import EnforceTagsForVariant
 from evergreen_lint.rules.invalid_build_parameter import InvalidBuildParameter
 from evergreen_lint.rules.required_expansions_write import RequiredExpansionsWrite
 from evergreen_lint.rules.tasks_for_variants import TasksForVariants
+from evergreen_lint.rules.variant_expansions import VariantExpansions
 
 RULES: Dict[str, Type[Rule]] = {
     "limit-keyval-inc": LimitKeyvalInc,
@@ -30,6 +31,7 @@ RULES: Dict[str, Type[Rule]] = {
     "tasks-for-variants": TasksForVariants,
     "enforce-tags-for-tasks": EnforceTagsForTasks,
     "enforce-tags-for-variants": EnforceTagsForVariants,
+    "variant-expansions": VariantExpansions,
 }
 # Thoughts on Writing Rules
 # - see .helpers for reliable iteration helpers
