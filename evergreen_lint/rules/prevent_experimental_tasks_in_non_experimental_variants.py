@@ -60,4 +60,3 @@ class PreventExperimentalTasksInNonExperimentalVariants(Rule):
                         f"which is tagged as '{variant_no_experimental_tag}'.\n"
                     )
         return failed_checks
-

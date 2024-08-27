@@ -1,6 +1,5 @@
 import unittest
-import os
-import yaml
+
 
 from evergreen_lint import rules
 from evergreen_lint.yamlhandler import load
@@ -126,27 +125,3 @@ class TestPreventExperimentalTasksInNonExperimentalVariants(unittest.TestCase):
         self.assertEqual(len(violations), 1)
         self.assertIn("task1", violations[0])
         self.assertNotIn("special_task", violations[0])
-
-    def test_with_actual_yaml(self):
-
-        yaml_path = "/home/ubuntu/mongo/etc/evaluated_evergreen.yml"
-        with open(yaml_path, 'r') as file:
-            yaml_content = yaml.safe_load(file)
-
-        rule_config = {
-            "task_experimental_tag": "experimental",
-            "variant_no_experimental_tag": "no_task_tag_experimental",
-            "ignored_tasks": [
-              "search_end_to_end_single_node"
-            ]
-        }
-        violations = self.rule(rule_config, yaml_content)
-
-        for violation in violations:
-            print(violation)
-
-        self.assertTrue(len(violations) > 0, "Expected at least one violation")
-
-
-if __name__ == '__main__':
-    unittest.main()
