@@ -140,6 +140,12 @@ rules:
     - rule: "variant-expansions"
       require_expansions: {[]}
       prohibit_expansions: {[]}
+
+    # Prevent experimental tasks from being used in non-experimental variants
+    - rule: "prevent-experimental-tasks-in-non-experimental-variants"
+      task_experimental_tag: "experimental"
+      variant_no_experimental_tag: "no_task_tag_experimental"
+      ignored_tasks: {[]}
 """[
     1:-1
 ]  # <--- this strips the leading and trailing newlines from this HEREDOC
