@@ -136,3 +136,22 @@ rules:
           name_regex: ".*"
           display_name_regex: "^!.+$"
 ```
+
+
+### prevent-tasks-with-tag-on-variants
+Prevent tasks with specific tags from being used in buildvariants with certain tags.
+
+#### Configuration
+
+Which tasks should be prevented in which variants can be configured via the lint config files. The
+configuration should use the following format:
+
+
+```yaml
+rules:
+  - rule: "prevent-tasks-with-tag-on-variants"
+    tags:
+      - variant_tag_name: "no_task_tag_experimental"
+        prevent_task_tag: "experimental"
+        ignored_tasks: []
+```
