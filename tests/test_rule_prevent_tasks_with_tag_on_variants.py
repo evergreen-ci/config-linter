@@ -108,12 +108,10 @@ class TestPreventTasksWithTagOnVariants(unittest.TestCase):
                 {
                     "variant_tag_name": "no_task_tag_experimental",
                     "prevent_task_tag": "experimental",
-                    "ignored_tasks": [],
                 },
                 {
                     "variant_tag_name": "no_task_tag_release_critical",
                     "prevent_task_tag": "release_critical",
-                    "ignored_tasks": [],
                 },
             ]
         }

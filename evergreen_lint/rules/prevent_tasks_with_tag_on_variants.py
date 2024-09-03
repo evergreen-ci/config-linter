@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, NamedTuple, Set
+from typing import List, NamedTuple, Optional, Set
 
 from evergreen_lint.model import LintError, Rule
 
@@ -8,7 +8,9 @@ from evergreen_lint.model import LintError, Rule
 class TagConfig(NamedTuple):
     variant_tag_name: str  # Tag name for the buildvariant
     prevent_task_tag: str  # Tag name for tasks that should be prevented
-    ignored_tasks: List[str] = []  # List of task names to be ignored by this rule
+    ignored_tasks: Optional[
+        List[str]
+    ] = None  # Optional list of task names to be ignored by this rule
 
 
 class PreventTasksWithTagOnVariantsConfig(NamedTuple):
@@ -72,10 +74,12 @@ class PreventTasksWithTagOnVariants(Rule):
 
                 # Check each task in the variant
                 for task_name in variant_tasks:
-                    if task_name in prevented_tasks and task_name not in tag_config.ignored_tasks:
+                    if task_name in prevented_tasks and (
+                        tag_config.ignored_tasks is None
+                        or task_name not in tag_config.ignored_tasks
+                    ):
                         failed_checks.append(
-                            f"Task '{task_name}' with tag '{tag_config.prevent_task_tag}' is used in buildvariant '{variant_name}' "
-                            f"which is tagged as '{tag_config.variant_tag_name}'."
+                            f"Task '{task_name}' is tagged with '{tag_config.prevent_task_tag}' and therefore should be removed from '{variant_name}' build variant, because the build variant is tagged with '{tag_config.variant_tag_name}'"
                         )
 
         return failed_checks
