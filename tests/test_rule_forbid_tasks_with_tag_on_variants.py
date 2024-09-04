@@ -4,16 +4,16 @@ from evergreen_lint import rules
 from evergreen_lint.yamlhandler import load
 
 
-class TestPreventTasksWithTagOnVariants(unittest.TestCase):
+class TestForbidTasksWithTagOnVariants(unittest.TestCase):
     def setUp(self) -> None:
-        self.rule = rules.prevent_tasks_with_tag_on_variants.PreventTasksWithTagOnVariants()
+        self.rule = rules.forbid_tasks_with_tag_on_variants.ForbidTasksWithTagOnVariants()
 
     def test_no_violations_when_tasks_in_appropriate_variants(self):
         rule_config = {
             "tags": [
                 {
                     "variant_tag_name": "no_task_tag_experimental",
-                    "prevent_task_tag": "experimental",
+                    "forbidden_task_tag": "experimental",
                 }
             ]
         }
@@ -39,12 +39,12 @@ class TestPreventTasksWithTagOnVariants(unittest.TestCase):
         violations = self.rule(rule_config, yaml)
         self.assertEqual(len(violations), 0)
 
-    def test_violation_when_task_with_tag_in_prevented_variant(self):
+    def test_violation_when_task_with_tag_in_forbidden_variant(self):
         rule_config = {
             "tags": [
                 {
                     "variant_tag_name": "no_task_tag_experimental",
-                    "prevent_task_tag": "experimental",
+                    "forbidden_task_tag": "experimental",
                 }
             ]
         }
@@ -75,7 +75,7 @@ class TestPreventTasksWithTagOnVariants(unittest.TestCase):
             "tags": [
                 {
                     "variant_tag_name": "no_task_tag_experimental",
-                    "prevent_task_tag": "experimental",
+                    "forbidden_task_tag": "experimental",
                     "ignored_tasks": ["special_task"],
                 }
             ]
@@ -107,11 +107,11 @@ class TestPreventTasksWithTagOnVariants(unittest.TestCase):
             "tags": [
                 {
                     "variant_tag_name": "no_task_tag_experimental",
-                    "prevent_task_tag": "experimental",
+                    "forbidden_task_tag": "experimental",
                 },
                 {
                     "variant_tag_name": "no_task_tag_release_critical",
-                    "prevent_task_tag": "release_critical",
+                    "forbidden_task_tag": "release_critical",
                 },
             ]
         }

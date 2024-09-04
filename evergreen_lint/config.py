@@ -141,8 +141,8 @@ rules:
       require_expansions: {[]}
       prohibit_expansions: {[]}
 
-    # Prevent tasks with specific tags from being used in buildvariants with certain tags.
-    - rule: "prevent-tasks-with-tag-on-variants"
+    # Forbid tasks with specific tags from being used in buildvariants with certain tags.
+    - rule: "forbid-tasks-with-tag-on-variants"
       tags: {[]}
 """[
     1:-1

@@ -138,20 +138,20 @@ rules:
 ```
 
 
-### prevent-tasks-with-tag-on-variants
-Prevent tasks with specific tags from being used in buildvariants with certain tags.
+### forbid-tasks-with-tag-on-variants
+Forbid tasks with specific tags from being used in buildvariants with certain tags.
 
 #### Configuration
 
-Which tasks should be prevented in which variants can be configured via the lint config files. The
+Which tasks should be forbidden in which variants can be configured via the lint config files. The
 configuration should use the following format:
 
 
 ```yaml
 rules:
-  - rule: "prevent-tasks-with-tag-on-variants"
+  - rule: "forbid-tasks-with-tag-on-variants"
     tags:
       - variant_tag_name: "no_task_tag_experimental"
-        prevent_task_tag: "experimental"
+        forbidden_task_tag: "experimental"
         ignored_tasks: []
 ```
