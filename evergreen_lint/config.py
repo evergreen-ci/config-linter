@@ -140,6 +140,10 @@ rules:
     - rule: "variant-expansions"
       require_expansions: {[]}
       prohibit_expansions: {[]}
+
+    # Forbid tasks with specific tags from being used in buildvariants with certain tags.
+    - rule: "forbid-tasks-with-tag-on-variants"
+      tags: {[]}
 """[
     1:-1
 ]  # <--- this strips the leading and trailing newlines from this HEREDOC
