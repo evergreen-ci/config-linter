@@ -155,3 +155,19 @@ rules:
         forbidden_task_tag: "experimental"
         ignored_tasks: []
 ```
+
+### enforce-tasks-distro-with-special-tag
+Ensure tasks with special tags only run on allowed distros.
+
+#### Configuration
+
+Which tasks should be enforced can be configured via the lint config files. The
+configuration should use the following format:
+
+```yaml
+rules:
+  - rule: "enforce-tasks-distro-with-special-tag"
+    tags:
+      - task_tag_name: "requires_large_host"
+        allowed_distro_regex: "(.*-xlarge|.*-large|.*-medium|macos-.*)"
+```
