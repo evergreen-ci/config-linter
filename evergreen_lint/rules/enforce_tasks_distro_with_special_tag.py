@@ -31,7 +31,7 @@ class EnforceTasksDistroWithSpecialTag(Rule):
     - rule: "enforce-tasks-distro-with-special-tag"
       tags:
         - task_tag_name: "requires_large_host"
-          allowed_distro_regex: "(.*-xlarge|.*-large|.*-medium|macos-.*)"
+          allowed_distro_regex: "(.*-xxlarge|.*-xlarge|.*-large|.*-medium|macos-.*)"
     ```
     """
 
@@ -86,8 +86,6 @@ class EnforceTasksDistroWithSpecialTag(Rule):
                         failed_checks.append(
                             f"Task '{task_name}' in variant '{variant_name}' is tagged with"
                             f" '{tag_config.task_tag_name}' but is set to run on incompatible"
-                            f" distros: {task_distros}. It should run on distros matching"
-                            f" pattern: {tag_config.allowed_distro_regex}"
+                            f" distros: {task_distros}. It should run on a bigger host"
                         )
-        print(f"juanfixme {failed_checks}")
         return failed_checks
