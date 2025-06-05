@@ -16,9 +16,7 @@ class EnforceTasksDistroWithSpecialTagConfig(NamedTuple):
 
     @classmethod
     def from_config_dict(cls, config_dict) -> EnforceTasksDistroWithSpecialTagConfig:
-        return cls(
-            tags=[TagConfig(**tag_config) for tag_config in config_dict.get("tags", [])]
-        )
+        return cls(tags=[TagConfig(**tag_config) for tag_config in config_dict.get("tags", [])])
 
 
 class EnforceTasksDistroWithSpecialTag(Rule):
@@ -51,9 +49,7 @@ class EnforceTasksDistroWithSpecialTag(Rule):
                 tagged_tasks.add(task["name"])
         return tagged_tasks
 
-    def _check_distro_requirements(
-        self, distros: List[str], allowed_distro_regex: str
-    ) -> bool:
+    def _check_distro_requirements(self, distros: List[str], allowed_distro_regex: str) -> bool:
         """Check if any of the distros match the allowed pattern."""
         pattern = re.compile(allowed_distro_regex)
         return any(pattern.match(distro) for distro in distros)
