@@ -138,6 +138,31 @@ rules:
 ```
 
 
+### enforce-tag-groups-for-variants
+Enforce tag groups in variant definitions.
+
+#### Configuration
+
+Which variant tag groups should be enforced can be configured via the lint config files. The
+configuration should use the following format:
+
+```yaml
+rules:
+  - rule: "enforce-tag-groups-for-variants"
+    tag_groups:
+      - group_name: "tag_group_name"
+        # the rule will fail, if tag matches the regex and do not match any tag from `tag_list`
+        tag_regex: required_tag_.+
+        tag_list:
+          - required_tag_test_1
+          - required_tag_test_2
+          - required_tag_test_3
+        # the rule will fail, if the number of tags is less than `min_num_of_tags` or more than `max_num_of_tags`
+        min_num_of_tags: 1
+        max_num_of_tags: 1
+```
+
+
 ### forbid-tasks-with-tag-on-variants
 Forbid tasks with specific tags from being used in buildvariants with certain tags.
 
